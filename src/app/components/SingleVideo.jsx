@@ -1,65 +1,45 @@
+"use client";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import VideoPlayer from "./VideoPlayer";
+import axios from 'axios';
+import user from '../../../public/p1.png';
 
-export default async function SingleVideo() {
-  const videoList = [
-    {
-      name: "Makenna Rosser",
-      userName: "rosser_makenna",
-      caption: "Good Morning! Here is my latest magic video.",
-      videoUrl: "./v1.mp4",
-      userImg: "./p1.png",
-      totalLove: "22 M",
-      totalComment: "15.5 K",
-      totalShare: "3.5 K",
-    },
-    {
-      name: "Desirae Bator",
-      userName: "batorbaby",
-      caption: "Good Morning! Here is my latest magic video.",
-      videoUrl: "./v2.mp4",
-      userImg: "./p2.png",
-      totalLove: "21 K",
-      totalComment: "25 k",
-      totalShare: "5 K",
-    },
-    {
-      name: "Makenna Rosser",
-      userName: "rosser_makenna",
-      caption: "Good Morning! Here is my latest magic video.",
-      videoUrl: "./v3.mp4",
-      userImg: "./p3.png",
-      totalLove: "2 M",
-      totalComment: "5.5 K",
-      totalShare: "5 K",
-    },
-    {
-      name: "Makenna Rosser",
-      userName: "rosser_makenna",
-      caption: "Good Morning! Here is my latest magic video.",
-      videoUrl: "./v4.mp4",
-      userImg: "./p4.png",
-      totalLove: "1.1 M",
-      totalComment: "1.5 K",
-      totalShare: "2.5 K",
-    },
-  ];
+export default function SingleVideo() {
+
+  const [ videos, setVideos ] = useState( null );
+
+  function getVideos( type, skip, limit ) {
+    axios.get( `https://staging.kwiks-data.com/video?type=${ type }&skip=${ skip }&limit=${ limit }` )
+      .then( ( res ) => {
+        setVideos( res.data.data );
+      } )
+      .catch( err => console.log( err ) );
+  }
+
+  useEffect( () => {
+    getVideos( 'popular', 0, 50 );
+    console.log( user );
+  }, [] );
+
+
   return (
+
     <div>
-      {videoList.map((videoList, index) => (
-        <div className='mb-8' key={index}>
+      { videos === null ? <h3>Loading....</h3> : videos.map( ( videoList, index ) => (
+        <div className='mb-8' key={ index }>
           <div className='flex justify-between items-start'>
             <div className='flex items-start'>
               <div>
-                <img src={videoList.userImg} alt='' />
+                <img src={ user.src } alt='' />
               </div>
               <div className='ml-2'>
-                <h4>{videoList.name}</h4>
+                <h4>{ videoList.uploader?.name }</h4>
                 <h6 className='text-[12px] text-gray-300'>
-                  @{videoList.userName}
+                  @{ videoList.uploader?.username }
                 </h6>
                 <div className='caaption mt-4'>
-                  <p>{videoList.caption}</p>
+                  <p>Good Morning! Here is my latest magic video.</p>
                 </div>
               </div>
             </div>
@@ -69,25 +49,25 @@ export default async function SingleVideo() {
           </div>
           <div className='flex justify-center mt-4'>
             <div className='video-wrap w-9/12 mx-auto flex justify-center'>
-              <VideoPlayer src={videoList.videoUrl} />
+              <VideoPlayer src={ videoList.playbackUrls?.[ 720 ][ 0 ] } />
               <div className='reaction-wrap flex items-end pl-5'>
                 <ul className='[&>li]:pt-5 [&>li]:text-[11px] [&>li]:text-center'>
                   <li>
                     <Link href='#'>
                       <img src='./loveIcon.svg' alt='' />
-                      <span>{videoList.totalLove}</span>
+                      <span>{ videoList.likes.length }</span>
                     </Link>
                   </li>
                   <li>
                     <Link href='#'>
                       <img src='./commentIcon.svg' alt='' />
-                      <span>{videoList.totalComment}</span>
+                      <span>{ videoList.comments }</span>
                     </Link>
                   </li>
                   <li>
                     <Link href='#'>
                       <img src='./shareIcon.svg' alt='' />
-                      <span>{videoList.totalShare}</span>
+                      <span>1.2K</span>
                     </Link>
                   </li>
                 </ul>
@@ -95,7 +75,7 @@ export default async function SingleVideo() {
             </div>
           </div>
         </div>
-      ))}
+      ) ) }
     </div>
   );
 }

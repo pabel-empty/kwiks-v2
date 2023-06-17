@@ -1,5 +1,12 @@
+"use client";
+import React, { useState } from "react";
 import Link from "next/link";
 export default function Header() {
+
+
+  const [ showModal, setShowModal ] = useState( false );
+  const [ isLogin, setIsLogin ] = useState( true );
+
   return (
     <header className='fixed w-full top-0 bg-white'>
       <div className='flex w-full justify-center items-center'>
@@ -30,7 +37,7 @@ export default function Header() {
                   <Link href='/'>Creators</Link>
                 </li>
                 <li className='border-l-2'>
-                  <Link href='/' className='getBtn'>
+                  <Link href="/" onClick={ () => setShowModal( true ) } className='getBtn'>
                     Get App
                   </Link>
                 </li>
@@ -39,6 +46,102 @@ export default function Header() {
           </div>
         </div>
       </div>
+
+
+
+
+      {/* Login and Signup Modal */ }
+      { showModal ? (
+        <>
+          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+          >
+            <div className="relative w-auto my-6 mx-auto max-w-3xl">
+              {/*content*/ }
+              <div className="input_box border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+
+                <div className="header_part">
+                  <button onClick={ () => setShowModal( false ) }>+</button>
+                </div>
+
+                {/*body*/ }
+                <div className="relative p-6 flex-auto">
+                  <div className="lg:px-8">
+                    <h3 className="mb-4 text-xl font-medium text-center">
+                      { isLogin ? 'Login' : 'Sign up' } to Kwiks
+                    </h3>
+                    <p className="text-center">Inter your valid email address and password<br />{ isLogin ? 'login' : 'register' } to your account</p>
+                    <form action="#">
+                      {
+                        isLogin ? <><div>
+                          <input
+                            type="email"
+                            name="email"
+                            id="email"
+                            className=""
+                            placeholder="email / username / phone"
+                          />
+                        </div>
+                          <div>
+                            <input
+                              type="password"
+                              name="password"
+                              id="password"
+                              placeholder="password"
+                              className=""
+                            />
+                          </div></> : <><div>
+                            <input
+                              type="text"
+                              name="fullName"
+                              id="fullName"
+                              className=""
+                              placeholder="Full Name"
+                            />
+                          </div>
+                          <div>
+                            <input
+                              type="email"
+                              name="createEmail"
+                              id="createEmail"
+                              className=""
+                              placeholder="Email"
+                            />
+                          </div>
+                          <div>
+                            <input
+                              type="password"
+                              name="createPassword"
+                              id="createPassword"
+                              placeholder="Create Password"
+                              className=""
+                            />
+                          </div></>
+                      }
+
+                      <button
+                        type="submit"
+                        className="w-full text-white"
+                      >
+                        { isLogin ? 'Login' : 'Create Account' }
+                      </button>
+
+                      <p className="text-center temrs_condition_para">
+                        By clicking here and continuing,<br /> I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+                      </p>
+
+                      {
+                        isLogin ? <h4 className="text-center">Dont have an account? <a onClick={ () => setIsLogin( false ) } href="javascript:void(0)">Sign up</a></h4> : <h4 className="text-center">Already have an account? <a onClick={ () => setIsLogin( true ) } href="javascript:void(0)">Login</a></h4>
+                      }
+                    </form>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="opacity-70 fixed inset-0 z-40 bg-black"></div>
+        </>
+      ) : null }
     </header>
   );
 }
